@@ -8,13 +8,8 @@ variable "location" {
   type        = string
 }
 
-variable "vnet_name" {
-  description = "Name of the virtual network"
-  type        = string
-}
-
-variable "subnet_name" {
-  description = "Name of the subnet"
+variable "hostname" {
+  description = "computer hostname"
   type        = string
 }
 

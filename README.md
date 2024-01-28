@@ -25,25 +25,53 @@ $ git clone git@github.com:iac-best-practices-workshow/terraform-version-pinning
 $ cd terraform-version-pinning
 ```
 
-### Provisioning the example resources
+### Provisioning the resources using version v1.0.0
 
-Open `main.tf` and change the module input values:
+Change directory to `usage-v1.0.0`:
+
+```sh
+cd usage-v1.0.0
+```
+
+Notice that `main.tf` references the version `v1.0.0`:
 
 ```hcl
-module "azure_compute" {
-    source = "github.com/iac-best-practices-workshop/terraform-azure-compute"
+module "compute-resources" {
+  source = "github.com/iac-best-practices-workshow/terraform-azure-compute?ref=v1.0.0"
 
-    resource_group_name = "workshop-resource-group"
-    location = "" # "Azure region in which to deploy resources"
-    vnet_name = "" # "Name of the virtual network"
-    subnet_name = "" # "Name of the subnet"
-    ssh_public_key = "" # "SSH public key for VM access"
+  location              = "uksouth"
+  resource_group_name   = "iac-workshop-v100"
+  hostname              = "computer-100"
+  admin_password        = "Password1234!"
 }
 ```
 
 Next, run `terraform init | plan | apply` to provision the resources.
 
-## Version Pinning (module builder side)
+### Provisioning the resources using version v1.1.0
+
+Change directory to `usage-v1.1.0`:
+
+```sh
+cd ../usage-v1.1.0
+```
+
+Notice that `main.tf` references the version `v1.1.0`:
+
+```hcl
+module "compute-resources" {
+  source = "github.com/iac-best-practices-workshow/terraform-azure-compute?ref=v1.1.0"
+
+  location              = "uksouth"
+  resource_group_name   = "iac-workshop-v110"
+  hostname              = "computer-110"
+  admin_password        = "Password1234!"
+}
+```
+
+Run `terraform init | plan | apply` to provision the resources. Notice that the VM created using version v1.1.0 uses two network interfaces instead of one.
+
+### Create a new version
 
 Now, you will practice adding a new resource to the `terraform-azure-compute` module and releasing a new version. You will then see how version pinning techniques ensure that existing Terraform configurations are not impacted by the module updates.
 
@@ -76,54 +104,23 @@ cd terraform-azure-compute
 ```sh
 git add .
 git commit -m "Add additional resource and update module version"
-git tag v1.1.0  # Use the appropriate version number
+git tag v1.2.0  # Use the appropriate version number
 ```
 
 4. You can "Release" the new version by pushing/merging your changes to your remote branch.
 
 ```sh
-git push origin v1.1.0
+git push origin v1.2.0
 ```
 
-## Testing Existing Configuration (module builder side)
+## Testing Existing Configuration
 
-1. In other Terraform configurations that use the `terraform-azure-compute` module update the module to use the previous version `v1.0.0`.
-
-```hcl
-module "azure_compute" {
-    source        = "github.com/iac-best-practices-workshop/terraform-azure-compute?ref=1.0.0"
-    # Other module configuration here
-}
-```
-
-2. Apply the Terraform configuration.
-
-```sh
-terraform init
-terraform apply
-```
+To confirm that users of version v.1.0.0 were not affected by your new version, switch back to directories usage-v1.0.0 and run `terraform plan`.
 
 **Observe No Impact:**
 
-- Observe that your existing configurations are not impacted by the module updates due to version pinning. The new resource should be created, and existing resources should remain unchanged.
+- Observe that your existing configurations are not impacted by the module updates due to version pinning.
 
-3. Now, update again you module code to point to the version `v1.1.0`:
+Now, update again the code inside `usage-v1.0.0` to point to the version `v1.2.0`. Notice that it should add the additional network interface added in v.1.1.0 and the VM added in v.1.2.0:
 
-```hcl
-module "azure_compute" {
-    source        = "github.com/iac-best-practices-workshop/terraform-azure-compute?ref=1.0.0"
-    # Other module configuration here
-}
-```
-
-4. Plan the Terraform configuration.
-
-```sh
-terraform plan
-```
-
-**Observe the impact:**
-
-- Observe that your existing configurations now are impacted by the module updates due to the version pinning.
-
-By completing this task, you have practiced version pinning and module release strategies, ensuring the stability of existing Terraform configurations even as the module evolves.
+By completing this task, you have practiced version pinning and module release strategies, ensuring the stability of existing Terraform configurations as the module evolves.
