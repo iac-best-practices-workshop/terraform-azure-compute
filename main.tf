@@ -33,11 +33,27 @@ resource "azurerm_network_interface" "example" {
   }
 }
 
+resource "azurerm_network_interface" "example-2" {
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  name                = "${var.resource_group_name}-nic-2"
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.example.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
 resource "azurerm_virtual_machine" "example" {
   name                  = "${var.resource_group_name}-vm"
   location              = azurerm_resource_group.example.location
   resource_group_name   = azurerm_resource_group.example.name
-  network_interface_ids = [azurerm_network_interface.example.id]
+  network_interface_ids = [
+    azurerm_network_interface.example.id,
+    azurerm_network_interface.example-2.id
+  ]
+  primary_network_interface_id = azurerm_network_interface.example.id
   vm_size               = "Standard_DS2_v2"
 
   storage_image_reference {
