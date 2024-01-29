@@ -18,10 +18,14 @@ A Terraform module repository for Azure compute resources. Used in the IaC Best 
 
 ### Cloning the project
 
-Clone the `terraform-version-pinning` project. This project references `terraform-azure-compute` module:
+Before using this project you need to fork it. 
+
+![Alt text](./images/image.png)
+
+After forking it to your GitHub username or organization space, clone module and change directory:
 
 ```sh
-$ git clone git@github.com:iac-best-practices-workshow/terraform-version-pinning.git
+$ git clone git@github.com:{your-user-or-organization}/terraform-version-pinning.git
 $ cd terraform-version-pinning
 ```
 
