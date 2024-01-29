@@ -102,7 +102,14 @@ Verify that the `v1.0.0` configurations remain unaffected by the new release:
 
 1. Return to `usage-v1.0.0` and run terraform plan.
 2. Observe no changes due to version pinning.
-3. Update `usage-v1.0.0` to `v1.2.0` and observe the impacts.
+3. Update `usage-v1.0.0` to point to your project ref`v1.2.0` and observe the impacts:
+
+```hcl
+module "compute-resources" {
+  source = "github.com/{your-username}/terraform-azure-compute?ref=v1.2.0"
+  # Additional configuration...
+}
+```
 
 ---
 
