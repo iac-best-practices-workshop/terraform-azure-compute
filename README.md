@@ -6,9 +6,74 @@ This Terraform module is crafted for Azure compute resources, showcasing best pr
 
 - [Introduction](#terraform-azure-compute-module)
 - [Table of Contents](#table-of-contents)
+- [About Version Pinning](#about-version-pinning)
 - [Version Pinning for Consumers](#version-pinning-for-consumers)
 - [Version Pinning for Developers](#version-pinning-for-developers)
 - [Testing Configuration Stability](#testing-configuration-stability)
+
+## About Version Pinning
+
+Terraform modules are an essential part of Infrastructure as Code (IaC) workflows. When using modules from external sources, it's crucial to manage versions to ensure the stability and predictability of your infrastructure.
+
+In this workshop, we'll use the example of the `terraform-azure-compute` module to understand version pinning and its implications.
+
+### Module Without Version Pinning
+
+Here's an example of using the `terraform-azure-compute` module without version pinning:
+
+```hcl
+module "azure_compute" {
+    source = "github.com/iac-best-practices-workshop/terraform-azure-compute"
+
+    # Additional configuration...
+}
+```
+
+In this scenario, we are not specifying a module version, which means we are using the latest available version. This approach may lead to unexpected changes if the module is updated.
+
+### Fixed Version Pinning
+
+Fixed version pinning ensures that a specific module version is used. Here's an example of fixed version pinning:
+
+```hcl
+module "azure_compute" {
+    source = "github.com/iac-best-practices-workshop/terraform-azure-compute?ref=v1.0.0"
+
+    # Additional configuration...
+}
+```
+
+In this case, we are explicitly specifying the version of the module to use, ensuring stability. However, updates and improvements to the module may be missed.
+
+### Flexible Version Pinning
+
+Flexible version pinning allows using the latest version within a specified range. Here's an example of flexible version pinning:
+
+```hcl
+module "azure_compute" {
+    source = "github.com/iac-best-practices-workshop/terraform-azure-compute?ref=v1.1.X-stable"
+
+    # Additional configuration...
+}
+```
+
+In this scenario, we use a version range (v1.1.X-stable) that allows us to receive bug fixes and minor updates while maintaining stability. However, major breaking changes should be avoided.
+
+### Implications
+
+Version pinning has significant implications for Terraform configurations:
+
+- **Stability**: Pinning to a specific version ensures configuration stability.
+- **Control**: Fixed pinning provides precise control over the module version.
+- **Maintenance**: Flexible pinning balances stability with the ability to receive updates.
+
+### Maturity Levels
+
+Version pinning can be categorized into different maturity levels:
+
+- **None (No Pinning)**: No version specified, highest risk of unexpected changes.
+- **Fixed (Exact Pinning)**: A specific version is used, offering stability but may miss updates.
+- **Flexible (Range Pinning)**: A version range is specified, balancing stability with updates.
 
 ## Version Pinning for Consumers
 
